@@ -31,31 +31,31 @@ db.connect((err) => {
 })
 
 app.post('/api/reg-member', async (req, res) => {
-    const { namaLengkap, nim, password } = req.body
-    const encPass = await generateHash(password)
-    const query = `INSERT INTO members (namaLengkap,nim,password) VALUES ('${namaLengkap}',${nim},'${encPass}')`
-    // console.log(req.body)
-    // console.log(query)
+    const { namaLengkap, nim, password } = req.body;
+    const encPass = await generateHash(password);
+    const query = `INSERT INTO members (namaLengkap, nim, password) VALUES (?, ?, ?)`;
+    console.log(req.body);
+
     try {
-        db.query(query, (err, result) => {
+        db.query(query, [namaLengkap, nim, encPass], (err, result) => {
             if (err) {
                 if (err.code === "ER_DUP_ENTRY") {
-                    console.error("Error: Duplicate entry")
-                    res.status(400).send("Duplicate entry")
+                    console.error("Error: Duplicate entry");
+                    res.status(400).send("Duplicate entry");
                 } else {
-                    console.error("Error: ", err)
-                    res.status(500).send("Error querying database")
+                    console.error("Error: ", err);
+                    res.status(500).send("Error querying database");
                 }
             } else {
-                console.log(result)
-                res.send("Data successfully inserted")
+                console.log(result);
+                res.send("Data successfully inserted");
             }
-        })
+        });
     } catch (error) {
-        // console.error("Caught error: ", error)
-        res.status(500).send("An error occurred")
+        res.status(500).send("An error occurred");
     }
-})
+});
+
 
 app.post('/api/login', async (req, res) => {
     try {
@@ -92,6 +92,31 @@ app.post('/api/login', async (req, res) => {
         console.error(err);
         return res.status(500).send("Internal server error");
     }
+});
+
+app.post('/api/add-book', (req, res) => {
+    let { codeBook, author, publisher, datePublished, about, pages, imgBook } = req.body;
+
+    if (!about || about.trim() === "") {
+        about = 'Belum ditambahkan';
+    }
+    if (!pages || pages.trim() === "") {
+        pages = 'Belum ditambahkan';
+    }
+
+    const query = `
+        INSERT INTO books (codeBook, author, publisher, datePublished, about, pages, imgBook) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(query, [codeBook, author, publisher, datePublished, about, pages, imgBook], (err, result) => {
+        if (err) {
+            console.error('Error inserting book:', err);
+            res.status(500).json({ error: 'Error inserting book' });
+            return;
+        }
+        res.status(201).json({ message: 'Book added successfully', bookId: result.insertId });
+    });
 });
 
 app.listen(PORT, () => {
