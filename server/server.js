@@ -69,7 +69,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).send("NIM and password are required");
         }
 
-        const query = 'SELECT password, level FROM members WHERE nim = ?';
+        const query = 'SELECT password, level, id FROM members WHERE nim = ?';
 
         db.query(query, [nim], async (err, results) => {
             if (err) {
@@ -85,7 +85,7 @@ app.post('/api/login', async (req, res) => {
             const match = await bcrypt.compare(plainPassword, hashedPassword);
 
             if (match) {
-                return res.status(200).json({ message: "Password is correct", level: results[0].level });
+                return res.status(200).json({ message: "Password is correct", level: results[0].level, idUser: results[0].id });
             } else {
                 return res.status(401).send("Password is incorrect");
             }
@@ -95,6 +95,24 @@ app.post('/api/login', async (req, res) => {
         console.error(err);
         return res.status(500).send("Internal server error");
     }
+});
+
+app.delete('/api/del-member/:id', (req, res) => {
+    const { id } = req.params;
+
+    const query = 'DELETE FROM members WHERE Id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Member not found' });
+        }
+
+        res.status(200).json({ message: 'Member deleted successfully' });
+    });
 });
 
 
@@ -167,6 +185,8 @@ app.post('/api/add-book', (req, res) => {
         pages = 'Belum ditambahkan';
     }
 
+    datePublished = moment(datePublished, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
     const query = `
         INSERT INTO books (codeBook, title, author, publisher, datePublished, about, pages, imgBook) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -225,7 +245,7 @@ app.get('/api/borrowed-books/:idMem', (req, res) => {
     const { idMem } = req.params;
 
     const query = `
-      SELECT b.title, b.publisher, br.dateBorrowed, br.dateBack, br.extendedCount, br.isFinished
+      SELECT br.id, b.title, b.publisher, br.dateBorrowed, br.dateBack, br.extendedCount, br.isFinished
       FROM borrows br
       JOIN books b ON br.idBook = b.Id
       WHERE br.idMem = ?
@@ -237,6 +257,67 @@ app.get('/api/borrowed-books/:idMem', (req, res) => {
         }
 
         res.status(200).json(results);
+    });
+});
+
+app.put('/api/extend-borrow/:id', (req, res) => {
+    const { id } = req.params;
+    const { newDateBack } = req.body;
+
+    if (!newDateBack) {
+        return res.status(400).json({ message: 'newDateBack is required' });
+    }
+
+    const formattedNewDateBack = moment(newDateBack, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+    const getCountQuery = 'SELECT extendedCount FROM borrows WHERE Id = ?';
+
+    db.query(getCountQuery, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Borrow record not found' });
+        }
+
+        const currentExtendedCount = results[0].extendedCount;
+
+        if (currentExtendedCount >= 2) {
+            return res.status(400).json({ message: 'Maximum extension limit reached' });
+        }
+
+        const updateQuery = `
+        UPDATE borrows 
+        SET dateBack = ?, extendedCount = extendedCount + 1 
+        WHERE Id = ?
+      `;
+
+        db.query(updateQuery, [formattedNewDateBack, id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error', error: err });
+            }
+
+            res.status(200).json({ message: 'Borrow period extended successfully' });
+        });
+    });
+});
+
+app.put('/api/finish-borrow/:id', (req, res) => {
+    const { id } = req.params;
+
+    const updateQuery = 'UPDATE borrows SET isFinished = 1 WHERE Id = ?';
+
+    db.query(updateQuery, [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Borrow record not found' });
+        }
+
+        res.status(200).json({ message: 'Borrow marked as finished successfully' });
     });
 });
 
