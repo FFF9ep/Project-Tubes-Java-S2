@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" prefHeight="720.0" prefWidth="1080.0" fx:controller="org.example.javafx.controller.LoginController">
+    <top>
+        <VBox spacing="10" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" style="-fx-background-color: #d32f2f;" spacing="10" prefHeight="60.0" prefWidth="1080.0">
+                    <children>
+                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@resources/logo-white.png" />
+                            </image>
+                        </ImageView>
+                        <Label text="My UMM Library" textFill="WHITE">
+                            <font>
+                                <Font size="36.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <GridPane alignment="CENTER" hgap="10" vgap="10">
+            <children>
+                <Label text="Welcome Admin To Tambah Buku" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <Button text="Back" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Button>
+                <Label text="Code Buku:" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <Label text="Title:" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <Label text="Author:" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                <Label text="Publisher:" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                <Label text="Date Publish:" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                <Label text="About:" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                <Label text="Pages:" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                <TextField GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+                <Label text="IMG Book" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.rowSpan="7">
+                    <graphic>
+                        <ImageView fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true"/>
+                    </graphic>
+                </Label>
+            </children>
+        </GridPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="My UMM Library">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
