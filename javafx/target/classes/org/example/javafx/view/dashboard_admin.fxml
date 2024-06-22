@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafx.view.resources.DashboardAdmin">
+   <children>
+      <AnchorPane prefHeight="90.0" prefWidth="1080.0" style="-fx-background-color: #C30000;" />
+      <ImageView fitHeight="65.0" fitWidth="277.0" layoutX="367.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@resources/logo-white.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="472.0" layoutY="27.0" text="My UMM Library System" textFill="WHITE">
+         <font>
+            <Font name="Segoe UI Semibold" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="34.0" layoutY="123.0" text="Welcome Back Admin!">
+         <font>
+            <Font name="Segoe UI Semibold" size="18.0" />
+         </font>
+      </Label>
+      <Button layoutX="34.0" layoutY="163.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="215.0" layoutY="237.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="468.0" layoutY="237.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="468.0" layoutY="447.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="728.0" layoutY="237.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="215.0" layoutY="447.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button layoutX="728.0" layoutY="447.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #C30000;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <ImageView fitHeight="74.0" fitWidth="99.0" layoutX="967.0" layoutY="632.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@resources/logo.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="521.0" layoutY="294.0" text="Edit ">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="518.0" layoutY="320.0" text="Buku">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="255.0" layoutY="294.0" text="Tambah">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="264.0" layoutY="320.0" text="Buku">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="774.0" layoutY="294.0" text="Display">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="780.0" layoutY="320.0" text="Buku">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="257.0" layoutY="494.0" text="Tambah ">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="250.0" layoutY="522.0" text="Mahasiswa">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="515.0" layoutY="494.0" text="Display">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="505.0" layoutY="522.0" text="Mahasiswa">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="776.0" layoutY="494.0" text="Hapus">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="779.0" layoutY="522.0" text="Buku">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="18.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="27.0" fitWidth="39.0" layoutX="40.0" layoutY="162.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@resources/arrow-left.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="68.0" layoutY="167.0" text="Logout">
+         <font>
+            <Font name="Segoe UI Semibold Italic" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

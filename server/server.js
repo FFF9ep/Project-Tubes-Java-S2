@@ -2,6 +2,7 @@ const express = require("express")
 const mysql = require("mysql2")
 const cors = require("cors")
 const bcrypt = require("bcrypt")
+const moment = require("moment")
 require('dotenv').config()
 
 const generateHash = require("./utils/hashPass")
@@ -30,32 +31,34 @@ db.connect((err) => {
     }
 })
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< AUTH ENDPOINTs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 app.post('/api/reg-member', async (req, res) => {
-    const { namaLengkap, nim, password } = req.body
-    const encPass = await generateHash(password)
-    const query = `INSERT INTO members (namaLengkap,nim,password) VALUES ('${namaLengkap}',${nim},'${encPass}')`
-    // console.log(req.body)
-    // console.log(query)
+    const { namaLengkap, nim, password } = req.body;
+    const encPass = await generateHash(password);
+    const query = `INSERT INTO members (namaLengkap, nim, password) VALUES (?, ?, ?)`;
+    console.log(req.body);
+
     try {
-        db.query(query, (err, result) => {
+        db.query(query, [namaLengkap, nim, encPass], (err, result) => {
             if (err) {
                 if (err.code === "ER_DUP_ENTRY") {
-                    console.error("Error: Duplicate entry")
-                    res.status(400).send("Duplicate entry")
+                    console.error("Error: Duplicate entry");
+                    res.status(400).send("Duplicate entry");
                 } else {
-                    console.error("Error: ", err)
-                    res.status(500).send("Error querying database")
+                    console.error("Error: ", err);
+                    res.status(500).send("Error querying database");
                 }
             } else {
-                console.log(result)
-                res.send("Data successfully inserted")
+                console.log(result);
+                res.send("Data successfully inserted");
             }
-        })
+        });
     } catch (error) {
-        // console.error("Caught error: ", error)
-        res.status(500).send("An error occurred")
+        res.status(500).send("An error occurred");
     }
-})
+});
+
 
 app.post('/api/login', async (req, res) => {
     try {
@@ -66,7 +69,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).send("NIM and password are required");
         }
 
-        const query = 'SELECT password FROM members WHERE nim = ?';
+        const query = 'SELECT password, level, id FROM members WHERE nim = ?';
 
         db.query(query, [nim], async (err, results) => {
             if (err) {
@@ -82,7 +85,7 @@ app.post('/api/login', async (req, res) => {
             const match = await bcrypt.compare(plainPassword, hashedPassword);
 
             if (match) {
-                return res.status(200).send("Password is correct");
+                return res.status(200).json({ message: "Password is correct", level: results[0].level, idUser: results[0].id });
             } else {
                 return res.status(401).send("Password is incorrect");
             }
@@ -93,6 +96,231 @@ app.post('/api/login', async (req, res) => {
         return res.status(500).send("Internal server error");
     }
 });
+
+app.delete('/api/del-member/:id', (req, res) => {
+    const { id } = req.params;
+
+    const query = 'DELETE FROM members WHERE Id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Member not found' });
+        }
+
+        res.status(200).json({ message: 'Member deleted successfully' });
+    });
+});
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< USERS ENDPOINTs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+app.get('/api/get-all-members', (req, res) => {
+    const query = 'SELECT * FROM members';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error retrieving members:', err);
+            res.status(500).json({ error: 'Error retrieving members' });
+            return;
+        }
+        res.status(200).json(results);
+    });
+});
+
+app.put('/api/edit-member/:id', async (req, res) => {
+    const { id } = req.params;
+    const { email, password, imgMem } = req.body;
+
+    let query = 'UPDATE members SET ';
+    let fields = [];
+    let values = [];
+
+    if (email) {
+        fields.push('email = ?');
+        values.push(email);
+    }
+    if (password) {
+        const hashedPassword = await generateHash(password);
+        fields.push('password = ?');
+        values.push(hashedPassword);
+    }
+    if (imgMem) {
+        fields.push('imgMem = ?');
+        values.push(imgMem);
+    }
+
+    if (fields.length === 0) {
+        res.status(400).json({ error: 'No fields to update' });
+        return;
+    }
+
+    query += fields.join(', ') + ' WHERE id = ?';
+    values.push(id);
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error updating member:', err);
+            res.status(500).json({ error: 'Error updating member' });
+            return;
+        }
+        res.status(200).json({ message: 'Member updated successfully' });
+    });
+});
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< BOOKS ENDPOINTs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+app.post('/api/add-book', (req, res) => {
+    let { codeBook, title, author, publisher, datePublished, about, pages, imgBook } = req.body;
+
+    if (!about || about.trim() === "") {
+        about = 'Belum ditambahkan';
+    }
+    if (!pages || pages.trim() === "") {
+        pages = 'Belum ditambahkan';
+    }
+
+    datePublished = moment(datePublished, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+    const query = `
+        INSERT INTO books (codeBook, title, author, publisher, datePublished, about, pages, imgBook) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(query, [codeBook, title, author, publisher, datePublished, about, pages, imgBook], (err, result) => {
+        if (err) {
+            console.error('Error inserting book:', err);
+            res.status(500).json({ error: 'Error inserting book' });
+            return;
+        }
+        res.status(201).json({ message: 'Book added successfully', bookId: result.insertId });
+    });
+});
+
+app.get('/api/get-all-books', (req, res) => {
+    const query = 'SELECT * FROM books';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error retrieving books:', err);
+            res.status(500).json({ error: 'Error retrieving books' });
+            return;
+        }
+        res.status(200).json(results);
+    });
+});
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< BORROW ENDPOINTs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+app.post('/api/borrow', (req, res) => {
+    let { idBook, idMem, dateBorrowed, dateBack } = req.body;
+
+    if (!idBook || !idMem || !dateBorrowed || !dateBack) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    dateBorrowed = moment(dateBorrowed, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    dateBack = moment(dateBack, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+
+    const query = `INSERT INTO borrows (idBook, idMem, dateBorrowed, dateBack, extendedCount, isFinished) 
+                   VALUES (?, ?, ?, ?, 0, 0)`;
+
+    db.query(query, [idBook, idMem, dateBorrowed, dateBack], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        res.status(201).json({ message: 'Book borrowed successfully', borrowId: result.insertId });
+    });
+});
+
+app.get('/api/borrowed-books/:idMem', (req, res) => {
+    const { idMem } = req.params;
+
+    const query = `
+      SELECT br.id, b.title, b.publisher, br.dateBorrowed, br.dateBack, br.extendedCount, br.isFinished
+      FROM borrows br
+      JOIN books b ON br.idBook = b.Id
+      WHERE br.idMem = ?
+    `;
+
+    db.query(query, [idMem], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        res.status(200).json(results);
+    });
+});
+
+app.put('/api/extend-borrow/:id', (req, res) => {
+    const { id } = req.params;
+    const { newDateBack } = req.body;
+
+    if (!newDateBack) {
+        return res.status(400).json({ message: 'newDateBack is required' });
+    }
+
+    const formattedNewDateBack = moment(newDateBack, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+    const getCountQuery = 'SELECT extendedCount FROM borrows WHERE Id = ?';
+
+    db.query(getCountQuery, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Borrow record not found' });
+        }
+
+        const currentExtendedCount = results[0].extendedCount;
+
+        if (currentExtendedCount >= 2) {
+            return res.status(400).json({ message: 'Maximum extension limit reached' });
+        }
+
+        const updateQuery = `
+        UPDATE borrows 
+        SET dateBack = ?, extendedCount = extendedCount + 1 
+        WHERE Id = ?
+      `;
+
+        db.query(updateQuery, [formattedNewDateBack, id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error', error: err });
+            }
+
+            res.status(200).json({ message: 'Borrow period extended successfully' });
+        });
+    });
+});
+
+app.put('/api/finish-borrow/:id', (req, res) => {
+    const { id } = req.params;
+
+    const updateQuery = 'UPDATE borrows SET isFinished = 1 WHERE Id = ?';
+
+    db.query(updateQuery, [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: 'Database error', error: err });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Borrow record not found' });
+        }
+
+        res.status(200).json({ message: 'Borrow marked as finished successfully' });
+    });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server telah berjalan di port ${PORT}`)

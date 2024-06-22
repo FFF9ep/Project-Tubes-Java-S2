@@ -1,0 +1,11 @@
+org\example\javafx\RegisterController.class
+org\example\javafx\WelcomeController.class
+org\example\javafx\Member.class
+org\example\javafx\RegisterMemberApp$1.class
+org\example\javafx\RegisterMemberApp$Member.class
+org\example\javafx\RegisterMemberApp.class
+org\example\javafx\LoginController$1.class
+module-info.class
+org\example\javafx\RegisterController$1.class
+org\example\javafx\LoginController.class
+org\example\javafx\MainApp.class
