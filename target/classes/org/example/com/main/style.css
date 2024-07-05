@@ -1,0 +1,81 @@
+.grid {
+    -fx-background-color: #ffffff;
+}
+
+/* Menetapkan gaya ke TextField */
+.text-field {
+    -fx-pref-width: 300px;
+    -fx-pref-height: 30px;
+    -fx-border-radius: 5px;
+    -fx-padding: 6 10 6 5;
+    -fx-background-color: #ffffff;
+}
+
+.vbox{
+    -fx-fill: #ff0000;
+}
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-font-weight: 700;
+}
+
+#paragraph{
+    -fx-font-weight: normal;
+    -fx-font-size: 12px;
+    
+
+}
+
+#backgroundMenu{
+    -fx-background-color: #FFFFFF;
+}
+
+.button {
+    -fx-background-color: #C30000;
+    -fx-pref-width: 300px;
+    -fx-pref-height: 40px;
+    -fx-padding: 6 10 6 5;
+    -fx-background-radius: 8;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #C30000;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-font-weight: 800;
+}
+
+#btnMenu{
+    -fx-pref-width: 100px;
+    -fx-pref-height: 40px;
+}
+
+.button:hover {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #C30000;
+    -fx-text-fill: #C30000;
+}
+
+#btn-outline{
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #353535;
+    -fx-border-color: #353535;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+#btn-outline:hover{
+    -fx-background-color: #353535;
+    -fx-border-color: #ffffff;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+#action-target {
+    -fx-fill: #ff0000;
+}
+
+#welcome-text {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
